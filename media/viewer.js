@@ -1,11 +1,11 @@
 // The Images viewer page. It shows the file open in the viewer
-// (`ferrite.fileUrl`) centered on a background, fit to the tab or at a zoom
+// (`flareite.fileUrl`) centered on a background, fit to the tab or at a zoom
 // level, and asks the extension for the picture's details.
 //
 // - The background is the same in every image tab, and kept across
-//   sessions: it's stored with `ferrite.storage`, and other tabs follow a
-//   change (`ferrite.onStorageChanged`).
-// - The zoom level is each tab's own (`ferrite.setState`).
+//   sessions: it's stored with `flareite.storage`, and other tabs follow a
+//   change (`flareite.onStorageChanged`).
+// - The zoom level is each tab's own (`flareite.setState`).
 // - Ctrl+wheel zooms about the pointer; +, -, 0, and F (with or without
 //   Ctrl) zoom in, out, to actual size, and to fit.
 
@@ -39,15 +39,15 @@ const buttons = {
 }
 
 /** SVG pictures are drawn at any size; bitmaps are fit only by shrinking them. */
-const vector = /\.svg$/i.test(ferrite.fileName ?? '')
-const saved = ferrite.getState() ?? {}
+const vector = /\.svg$/i.test(flareite.fileName ?? '')
+const saved = flareite.getState() ?? {}
 /** `'fit'`, or the scale: 1 is actual size. */
 let zoom = saved.zoom === 'fit' || typeof saved.zoom === 'number' ? saved.zoom : 'fit'
 let background = isBackground(saved.background) ? saved.background : 'checkerboard'
 /** An SVG picture's size from the extension, which reads it from the file. */
 let vectorSize = null
 
-const save = () => ferrite.setState({ zoom, background })
+const save = () => flareite.setState({ zoom, background })
 
 /** The picture's size at 1:1, once known. */
 function naturalSize() {
@@ -124,7 +124,7 @@ function setBackground(next, store) {
   }
   save()
   if (store) {
-    ferrite.storage.set('background', next)
+    flareite.storage.set('background', next)
   }
 }
 
@@ -133,7 +133,7 @@ const swatches = document.getElementById('backgrounds')
 for (const [name, label] of BACKGROUNDS) {
   const button = document.createElement('button')
   button.type = 'button'
-  button.className = 'ferrite-button'
+  button.className = 'flareite-button'
   button.dataset.swatch = name
   button.title = label
   button.setAttribute('aria-label', label)
@@ -145,12 +145,12 @@ for (const [name, label] of BACKGROUNDS) {
   swatches.append(button)
 }
 setBackground(background, false)
-ferrite.storage.get('background').then(stored => {
+flareite.storage.get('background').then(stored => {
   if (isBackground(stored) && stored !== background) {
     setBackground(stored, false)
   }
 })
-ferrite.onStorageChanged(({ scope, key, value }) => {
+flareite.onStorageChanged(({ scope, key, value }) => {
   // Changed in another tab, or cleared by the user.
   if (scope === null || (scope === 'global' && key === 'background')) {
     setBackground(isBackground(value) ? value : 'checkerboard', false)
@@ -177,7 +177,7 @@ stage.addEventListener(
   { passive: false },
 )
 
-// On the document, so Ferrite's own shortcuts for these keys (zooming the
+// On the document, so Flareite's own shortcuts for these keys (zooming the
 // window) don't run while the picture has focus.
 document.addEventListener('keydown', event => {
   if (event.altKey || event.target instanceof HTMLInputElement) {
@@ -211,11 +211,11 @@ picture.addEventListener('load', () => {
 picture.addEventListener('error', () => {
   picture.hidden = true
   problem.hidden = false
-  problem.textContent = `${ferrite.fileName} can't be shown: it isn't a picture this viewer can draw.`
+  problem.textContent = `${flareite.fileName} can't be shown: it isn't a picture this viewer can draw.`
 })
 
 // The details line, and an SVG picture's size.
-ferrite.onMessage(message => {
+flareite.onMessage(message => {
   if (typeof message.details === 'string') {
     details.textContent = message.details
     details.title = message.details
@@ -226,14 +226,14 @@ ferrite.onMessage(message => {
       : null
   layout()
 })
-const askForDetails = () => ferrite.postMessage({ type: 'details' })
+const askForDetails = () => flareite.postMessage({ type: 'details' })
 
-ferrite.onFileChanged(url => {
+flareite.onFileChanged(url => {
   picture.src = url
   askForDetails()
 })
 
-picture.alt = ferrite.fileName ?? ''
-picture.src = ferrite.fileUrl
+picture.alt = flareite.fileName ?? ''
+picture.src = flareite.fileUrl
 askForDetails()
 layout()

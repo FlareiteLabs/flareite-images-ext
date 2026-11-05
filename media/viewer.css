@@ -1,5 +1,5 @@
 /* The Images viewer page: a toolbar, and the picture centered below it. The
-   colors are Ferrite's theme (--ferrite-*), and the controls the kit's. */
+   colors are Flareite's theme (--flareite-*), and the controls the kit's. */
 
 html,
 body {
@@ -18,7 +18,7 @@ body {
   overflow: hidden;
 }
 
-.toolbar > .ferrite-group {
+.toolbar > .flareite-group {
   flex: none;
 }
 
@@ -57,7 +57,7 @@ body {
   display: block;
   max-width: none;
   background: var(--backdrop);
-  box-shadow: 0 0 0 1px var(--ferrite-border);
+  box-shadow: 0 0 0 1px var(--flareite-border);
 }
 
 /* Pixels stay square when a bitmap is shown larger than it is. */
@@ -70,7 +70,7 @@ body {
 }
 
 .problem {
-  color: var(--ferrite-text-muted);
+  color: var(--flareite-text-muted);
 }
 
 /* Backgrounds: on the body for the picture, and on each swatch. */
@@ -84,11 +84,11 @@ body {
 }
 
 [data-background='checkerboard'] {
-  --light: var(--ferrite-editor-background);
+  --light: var(--flareite-editor-background);
   --dark: color-mix(
     in srgb,
-    var(--ferrite-editor-foreground) 12%,
-    var(--ferrite-editor-background)
+    var(--flareite-editor-foreground) 12%,
+    var(--flareite-editor-background)
   );
 }
 
@@ -120,7 +120,7 @@ body {
   width: 14px;
   height: 14px;
   background: var(--backdrop);
-  box-shadow: 0 0 0 1px var(--ferrite-border);
+  box-shadow: 0 0 0 1px var(--flareite-border);
 }
 
 /* "No background" shows the editor's, crossed out. */
@@ -129,8 +129,8 @@ body {
     linear-gradient(
       to top right,
       transparent calc(50% - 1px),
-      var(--ferrite-text-muted) 50%,
+      var(--flareite-text-muted) 50%,
       transparent calc(50% + 1px)
     ),
-    var(--ferrite-editor-background);
+    var(--flareite-editor-background);
 }

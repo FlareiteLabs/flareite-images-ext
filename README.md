@@ -30,17 +30,17 @@ update.
 
 ## How it works
 
-This is the example of a webview viewer (see "Webviews" in Ferrite's `docs/extensions.md`). The
+This is the example of a webview viewer (see "Webviews" in Flareite's `docs/extensions.md`). The
 manifest declares two viewers, with the file names they're for, that both show
 `media/viewer.html`. The page:
 
-- loads the picture from `ferrite.fileUrl`, and again when `ferrite.onFileChanged` says it
+- loads the picture from `flareite.fileUrl`, and again when `flareite.onFileChanged` says it
   changed;
-- draws its toolbar with Ferrite's kit (`__ferrite/kit.css`) and named icons, so it looks like
+- draws its toolbar with Flareite's kit (`__flareite/kit.css`) and named icons, so it looks like
   the workbench in any theme;
-- keeps the background with `ferrite.storage`, and follows other tabs' changes with
-  `ferrite.onStorageChanged`; keeps each tab's zoom with `ferrite.setState`;
-- asks for the picture's details with `ferrite.postMessage`.
+- keeps the background with `flareite.storage`, and follows other tabs' changes with
+  `flareite.onStorageChanged`; keeps each tab's zoom with `flareite.setState`;
+- asks for the picture's details with `flareite.postMessage`.
 
 That message runs the viewers' `on_message` command, in the extension's code (`src/lib.rs`). It
 reads the start of the file (`viewers::read-viewed-file`), works out the format and size from its

@@ -1,4 +1,4 @@
-//! Images: an example Ferrite extension with webview viewers.
+//! Images for Flareite: webview viewers for image files.
 //!
 //! The manifest declares two viewers: `image` for PNG, JPEG, GIF, WebP,
 //! BMP, ICO, and AVIF files, which opens them instead of their bytes, and
@@ -16,10 +16,10 @@
 
 mod info;
 
-use ferrite_extension_api::types::{
+use flareite_extension_api::types::{
   Activation, ApiError, CommandContext, DocumentChange, DocumentId, DocumentInfo, Webview,
 };
-use ferrite_extension_api::{Guest, export_extension, viewers, webviews};
+use flareite_extension_api::{Guest, export_extension, viewers, webviews};
 
 use info::{ImageInfo, Source};
 
@@ -132,7 +132,7 @@ impl Guest for Images {
 
   fn run_command(command: String, _context: CommandContext) -> Result<(), String> {
     match command.as_str() {
-      "ferrite.images.details" => answer(),
+      "flareite.images.details" => answer(),
       other => Err(format!("unknown command {other}")),
     }
   }
