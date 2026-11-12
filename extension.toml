@@ -4,11 +4,11 @@
 # text, and in the viewer with Reopen Editor With. See Flareite's docs/extensions.md#webviews.
 id = "flareite.images"
 name = "Images"
-version = "0.1.0"
+version = "1.0.0"
 description = "Shows image files as pictures you can zoom, on the background you choose."
 author = "Flareite"
 icon = "icon.svg"
-api_version = "1"
+api_version = "2"
 entrypoint = "target/wasm32-unknown-unknown/release/images.wasm"
 
 [engines]
@@ -19,13 +19,8 @@ command = "cargo"
 args = ["build", "--release"]
 watch = ["src", "Cargo.toml"]
 
-# Run when a viewer's page asks for its picture's details.
-[[commands]]
-id = "flareite.images.details"
-title = "Image Details"
-hidden = true
-
-# The page loads the picture itself, so the viewers need no command.
+# The page loads the picture itself, and asks for its details with a
+# message (a `webview-message` event).
 [[viewers]]
 id = "image"
 title = "Image Viewer"
@@ -40,7 +35,6 @@ patterns = [
   "*.avif",
 ]
 webview = "media/viewer.html"
-on_message = "flareite.images.details"
 
 # SVG is text people edit, so the viewer is only an option for it.
 [[viewers]]
@@ -48,5 +42,4 @@ id = "svg"
 title = "Image Viewer"
 patterns = ["*.svg"]
 webview = "media/viewer.html"
-on_message = "flareite.images.details"
 priority = "option"

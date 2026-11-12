@@ -7,8 +7,8 @@
 //! draws the picture from the file itself, with a toolbar to change its
 //! background and size (`media/viewer.js`).
 //!
-//! The page asks for the picture's details with a message, which runs the
-//! viewers' `on_message` command. It reads the file's header (`info`) and
+//! The page asks for the picture's details with a message, which comes as
+//! a `webview-message` event. It reads the file's header (`info`) and
 //! answers with a line saying what the picture is, such as
 //! `PNG · 1920 × 1080 pixels · 8-bit RGBA · 245.3 KiB`, and its size in
 //! pixels: what "actual size" means for an SVG file, which browsers don't
@@ -16,10 +16,9 @@
 
 mod info;
 
-use flareite_extension_api::types::{
-  Activation, ApiError, CommandContext, DocumentChange, DocumentId, DocumentInfo, Webview,
-};
-use flareite_extension_api::{Guest, export_extension, viewers, webviews};
+use flareite_extension_api::events::Event;
+use flareite_extension_api::types::{Activation, ApiError, Webview, WebviewMessage};
+use flareite_extension_api::{Extension, register, viewers, webviews};
 
 use info::{ImageInfo, Source};
 
@@ -101,8 +100,7 @@ fn details_message(info: Option<&ImageInfo>, size: u64) -> String {
 }
 
 /// Answers a viewer page's request for its picture's details.
-fn answer() -> Result<(), String> {
-  let message = webviews::message().ok_or("no message to answer")?;
+fn answer(message: &WebviewMessage) -> Result<(), String> {
   let Webview::Viewer(viewed) = &message.source else {
     return Err("only the viewers' pages ask for details".into());
   };
@@ -123,26 +121,22 @@ fn answer() -> Result<(), String> {
 
 struct Images;
 
-impl Guest for Images {
-  fn activate(_context: Activation) -> Result<(), String> {
-    Ok(())
+impl Extension for Images {
+  fn activate(_: Activation) -> Result<Self, String> {
+    Ok(Images)
   }
 
-  fn deactivate() {}
-
-  fn run_command(command: String, _context: CommandContext) -> Result<(), String> {
-    match command.as_str() {
-      "flareite.images.details" => answer(),
-      other => Err(format!("unknown command {other}")),
+  /// The viewers' pages send one message: asking for their picture's
+  /// details.
+  fn handle_event(&mut self, event: Event) -> Result<(), String> {
+    match event {
+      Event::WebviewMessage(message) => answer(&message),
+      _ => Ok(()),
     }
   }
-
-  fn document_opened(_document: DocumentInfo) {}
-  fn document_changed(_change: DocumentChange) {}
-  fn document_closed(_document: DocumentId) {}
 }
 
-export_extension!(Images);
+register!(Images);
 
 #[cfg(test)]
 mod tests {

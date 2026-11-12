@@ -42,7 +42,7 @@ manifest declares two viewers, with the file names they're for, that both show
   `flareite.onStorageChanged`; keeps each tab's zoom with `flareite.setState`;
 - asks for the picture's details with `flareite.postMessage`.
 
-That message runs the viewers' `on_message` command, in the extension's code (`src/lib.rs`). It
+The extension's code (`src/lib.rs`) hears of that message as a `webview-message` event. It
 reads the start of the file (`viewers::read-viewed-file`), works out the format and size from its
 header (`src/info.rs`, which has its own tests), and answers with the details line and the size
 in pixels (`webviews::post-message`). The page uses that size as an SVG picture's actual size,
